@@ -13,12 +13,11 @@ exports.listRecipes = async function listRecipes() {
 };
 
 exports.findRecipeById = async function findRecipeById(id) {
-    const recipe = Recipe.findOne({ id });
-    return recipe;
+    return Recipe.findOne({ _id: id });
 };
 
-exports.updateRecipe = async function updateRecipe(_id, data) {
-    await Recipe.findByIdAndUpdate({ _id }, {
+exports.updateRecipe = async function updateRecipe(id, data) {
+    await Recipe.findByIdAndUpdate({ _id: id }, {
         $set: {
             name: data.name,
             ingredients: data.ingredients,
@@ -27,14 +26,14 @@ exports.updateRecipe = async function updateRecipe(_id, data) {
     });
 };
 
-exports.updateImageRecipe = async function updateImageRecipe(_id, urlString) {
-    await Recipe.findByIdAndUpdate({ _id }, {
+exports.updateImageRecipe = async function updateImageRecipe(id, urlString) {
+    await Recipe.findByIdAndUpdate({ _id: id }, {
         $set: {
             image: urlString,
         },
     });
 };
 
-exports.deleteRecipe = async function deleteRecipe(_id) {
-    await Recipe.findByIdAndDelete({ _id });
+exports.deleteRecipe = async function deleteRecipe(id) {
+    await Recipe.findByIdAndDelete({ _id: id });
 };

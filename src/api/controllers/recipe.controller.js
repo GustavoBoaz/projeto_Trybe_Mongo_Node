@@ -35,63 +35,40 @@ exports.listRecipes = async function listRecipes(req, res) {
 };
 
 exports.findRecipeById = async function findRecipeById(req, res) {
-    const { id } = req.params.id;
     try {
-        const recipe = await recipeServices.findRecipeById({ id });
-
-        if (!recipe) {
-            return res.status(404).send({ message: 'recipe not found' });
-        }
-
-        return res.status(200).send(recipe);
-    } catch (error) { res.status(500).send({ message: 'Internal error findRecipeById!.' }); }
+        const recipe = await recipeServices.findRecipeById(req.params.id);
+        return res.status(200).send(recipe);                 
+    } catch (error) { res.status(404).send({ message: 'recipe not found' }); }
 };
 
 exports.updateRecipe = async function updateRecipe(req, res) {
     const { name, ingredients, preparation } = req.body;
-    const { id } = req.params.id;
     if (!isValidFields(name, ingredients, preparation)) {
         return res.status(400).send({ message: 'Invalid entries. Try again.' });
     }
     
     try {
-        const recipe = await recipeServices.findRecipeById(id);
+        await recipeServices.updateRecipe(req.params.id, req.body);
 
-        if (!recipe) {
-            return res.status(404).send({ message: 'recipe not found or not permition' });
-        }
-
-        await recipeServices.updateRecipe(recipe.id, req.body);
-
-        return res.status(200).send(await recipeServices.findRecipeById(id));
-    } catch (error) { res.status(500).send({ message: 'Internal error updateRecipe!.' }); }
+        return res.status(200).send(await recipeServices.findRecipeById(req.params.id));
+    } catch (error) { res.status(404).send({ message: 'recipe not found' }); }
 };
 
 exports.deleteRecipe = async function deleteRecipe(req, res) {
-    const { id } = req.params.id;
     try {
-        const recipe = await recipeServices.findRecipeById(id);
-
-        if (!recipe) {
-            return res.status(404).send({ message: 'recipe not found or not permition' });
-        }
-
-        await recipeServices.deleteRecipe(recipe.id);
+        await recipeServices.deleteRecipe(req.params.id);
 
         return res.status(204).send();
-    } catch (error) { res.status(500).send({ message: 'Internal error deleteRecipe!.' }); }
+    } catch (error) { res.status(404).send({ message: 'recipe not found' }); }
 };
 
 exports.uploadImage = async function uploadImage(req, res) {
-    const { id } = req.params.id;
     try {
-        const recipe = await recipeServices.findRecipeById(id);
-
-        if (!recipe) {
-            return res.status(404).send({ message: 'recipe not found' });
+        if (req.headers.authorization === undefined) {
+            return res.status(401).send({ message: 'missing auth token' });
         }
-        const urlString = 'localhost:3000/src/uploads/'.concat(recipe.id).concat('.jpg');
-        await recipeServices.updateImageRecipe(recipe.id, urlString);
-        return res.status(200).send(await recipeServices.findRecipeById(id));
-    } catch (error) { res.status(500).send({ message: 'Internal error uploadImage!.' }); }
+        const urlString = 'localhost:3000/src/uploads/'.concat(req.params.id).concat('.jpeg');
+        await recipeServices.updateImageRecipe(req.params.id, urlString);
+        return res.status(200).send(await recipeServices.findRecipeById(req.params.id));
+    } catch (error) { res.status(404).send({ message: 'recipe not found' }); }
 };

@@ -1,6 +1,8 @@
 const express = require('express');
 const bodyParser = require('body-parser');
+const path = require('path');
 const mongoose = require('mongoose');
+
 require('dotenv').config();
 
 const MONGO_DB_URL = `mongodb://${process.env.HOST || 'mongodb'}:27017/Cookmaster`;
@@ -21,10 +23,12 @@ require('./models/recipe.model');
 const userRoute = require('./routes/user.routes');
 const authRoute = require('./routes/auth.routes');
 const recipeRoute = require('./routes/recipe.routes');
+const imageRoute = require('./routes/image.routes');
 
 app.use('/users', userRoute);
 app.use('/login', authRoute);
 app.use('/recipes', recipeRoute);
+app.use('/images', express.static(path.join(__dirname, '..', 'uploads')), imageRoute);
 
 // Não remover esse end-point, ele é necessário para o avaliador
 app.get('/', (request, response) => {

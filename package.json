@@ -7,7 +7,7 @@
     "test": "jest --runInBand --detectOpenHandles --forceExit",
     "start": "node .",
     "dev": "nodemon .",
-    "dev:test": "mocha ./src/integration-tests/**/*$NAME*.{test,spec}.js --exit",
+    "dev:test": "mocha './src/integration-tests/**/*.{test,spec}.js' --exit",
     "dev:test:coverage": "nyc --all npm run dev:test",
     "dev:test:coverage:json": "nyc --all --reporter=json-summary npm run dev:test",
     "lint": "eslint --no-inline-config --ext .js,.jsx --no-error-on-unmatched-pattern -c .eslintrc.json ."
@@ -35,7 +35,8 @@
     "mongoose": "^6.5.2",
     "multer": "1.4.2",
     "nodemon": "2.0.4",
-    "shelljs": "0.8.5"
+    "shelljs": "0.8.5",
+    "supertest": "^6.2.4"
   },
   "devDependencies": {
     "chai": "4.3.4",

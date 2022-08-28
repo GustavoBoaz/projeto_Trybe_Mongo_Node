@@ -8,7 +8,7 @@ const router = express.Router();
 const storage = multer.diskStorage({
     destination: 'src/uploads/',
     filename: (req, file, cb) => {
-        cb(null, req.params.id.concat('.jpg'));
+        cb(null, req.params.id.concat('.jpeg'));
     },
 });
 const upload = multer({ storage });
@@ -17,7 +17,7 @@ router.post('/', services.authorize, controller.createNewRecipe);
 router.get('/', controller.listRecipes);
 router.get('/:id', controller.findRecipeById);
 router.put('/:id', services.authorize, controller.updateRecipe);
-router.put('/:id/image', services.authorize, upload.single('image'), controller.uploadImage);
+router.put('/:id/image', upload.single('image'), controller.uploadImage);
 router.delete('/:id', services.authorize, controller.deleteRecipe);
 
 module.exports = router;
